@@ -8,8 +8,11 @@ git clone https://github.com/batistabjs/BuscaComCEP.git
 ```
 Import Unit _untBuscaComCEP.pas_ to your Delphi Project
 
-## Examples to use
+## Example to use
 ```
+//untMain
+uses untBuscaComCEP;
+
 procedure TfrmMain.editCEPExit(Sender: TObject);
 var
   _rEndereco: TBuscaComCEP;
