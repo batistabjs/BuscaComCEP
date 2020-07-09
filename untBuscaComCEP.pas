@@ -9,7 +9,7 @@ unit untBuscaComCEP;
 interface
 
 uses
-  System.SysUtils, Xml.xmldom, Xml.XMLIntf, Xml.XMLDoc, Xml.Win.msxmldom;
+  System.SysUtils, System.JSON, IdHTTP, IdSSLOpenSSL;
 
 type
   TBuscaComCEP = class (TObject)
@@ -36,13 +36,13 @@ implementation
 
 { TEndereco }
 
-constructor TEndereco.Create(const Cep: string);
+constructor TBuscaComCEP.Create(const Cep: string);
 begin
   FCep := Cep;
   proLocalizaCep;
 end;
 
-procedure TEndereco.proLocalizaCep;
+procedure TBuscaComCEP.proLocalizaCep;
 resourcestring
   __rINFORME_NR_CEP = 'Informe o número do cep.';
   __rCEP_INVALIDO = 'O número do CEP deve ser composto por 8 bytes.';
@@ -54,11 +54,12 @@ const
   _rLocalidade = 'localidade';
   _rUF = 'uf';
   _rWS = 'https://viacep.com.br/ws/';
-  _rXML = '/xml/';
-  _rERRO = 'erro';
-  _rTrue = 'true';
+  _rJSON = '/json/';
 var
-  _rDXML: IXMLDocument;
+  idhttp1: TIdHTTP;
+  idSSL: TIdSSLIOHandlerSocketOpenSSL;
+  json: string;
+  obj: TJSONObject;
 begin
   FCep := StringReplace(Cep, '-', '', [rfReplaceAll]).Trim;
   if Cep.IsEmpty then
@@ -67,28 +68,39 @@ begin
   if Cep.Length <> 8 then
     raise Exception.Create(__rCEP_INVALIDO);
 
-
-  _rDXML := TXMLDocument.Create(nil);
+  IdHTTP1 := TIdHTTP.Create;
   try
-    //Monta o endereço para consultar API e popula o _rDXML
-    _rDXML.FileName := _rWS + Cep + _rXML;
-    _rDXML.Active := True;
-    { Quando consultado um CEP de formato válido, porém inexistente, }
-    { por exemplo: "99999999", o retorno conterá um valor de "erro"  }
-    { igual a "true". Isso significa que o CEP consultado não foi    }
-    { encontrado na base de dados. https://viacep.com.br/            }
+    try
+      idSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+      idSSL.SSLOptions.Method := sslvSSLv3;
+      idSSL.SSLOptions.SSLVersions := [sslvTLSv1_2];
 
-    if _rDXML.DocumentElement.ChildValues[0] = _rTrue then
+      //criação do request a API (uso necessário do atributo UserAgent)
+      IdHTTP1.Request.UserAgent := 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0';
+      IdHTTP1.IOHandler := idSSL;
+      //popula o json com os dados vindos da API
+      json := IdHTTP1.Get(_rWS + Cep + _rJSON);
+    finally
+      idSSL.Free;
+    end;
+  finally
+    IdHTTP1.Free;
+  end;
+
+  //Parse e Encode do Json para faciliar a captura de valores
+  obj := TJSONObject.ParseJSONValue(TEncoding.ASCII.GetBytes(json),0) as TJSONObject;
+  try
+    if not obj.TryGetValue(_rCep, FCep) then
       raise Exception.Create(__rCEP_NAO_ENCONTRADO);
 
     //popula as variáveis do objeto TBuscaComCEP
-    FCep := _rDXML.DocumentElement.ChildNodes[_rCep].Text;
-    FLogradouro := _rDXML.DocumentElement.ChildNodes[_rLogradouro].Text;
-    FBairro := _rDXML.DocumentElement.ChildNodes[_rBairro].Text;
-    FCidade := _rDXML.DocumentElement.ChildNodes[_rLocalidade].Text;
-    FUF := _rDXML.DocumentElement.ChildNodes[_rUF].Text;
+    FCep := obj.GetValue<string>(_rCep);
+    FLogradouro := obj.GetValue<string>(_rLogradouro);
+    FBairro := obj.GetValue<string>(_rBairro);
+    FCidade := obj.GetValue<string>(_rLocalidade);
+    FUF := obj.GetValue<string>(_rUF);
   finally
-    _rDXML := nil;
+   obj.Free;
   end;
 end;
 

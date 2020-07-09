@@ -1,0 +1,79 @@
+object Form2: TForm2
+  Left = 0
+  Top = 0
+  Caption = 'Form2'
+  ClientHeight = 203
+  ClientWidth = 465
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = False
+  OnKeyPress = FormKeyPress
+  PixelsPerInch = 96
+  TextHeight = 13
+  object LabeledEdit1: TLabeledEdit
+    Left = 24
+    Top = 40
+    Width = 121
+    Height = 21
+    EditLabel.Width = 19
+    EditLabel.Height = 13
+    EditLabel.Caption = 'CEP'
+    TabOrder = 0
+    OnExit = LabeledEdit1Exit
+  end
+  object LabeledEdit2: TLabeledEdit
+    Left = 24
+    Top = 80
+    Width = 257
+    Height = 21
+    EditLabel.Width = 23
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Rua:'
+    TabOrder = 1
+  end
+  object LabeledEdit3: TLabeledEdit
+    Left = 296
+    Top = 80
+    Width = 121
+    Height = 21
+    EditLabel.Width = 16
+    EditLabel.Height = 13
+    EditLabel.Caption = 'N'#186':'
+    TabOrder = 2
+  end
+  object LabeledEdit4: TLabeledEdit
+    Left = 24
+    Top = 120
+    Width = 121
+    Height = 21
+    EditLabel.Width = 32
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Bairro:'
+    TabOrder = 3
+  end
+  object LabeledEdit5: TLabeledEdit
+    Left = 160
+    Top = 120
+    Width = 121
+    Height = 21
+    EditLabel.Width = 37
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Cidade:'
+    TabOrder = 4
+  end
+  object LabeledEdit6: TLabeledEdit
+    Left = 296
+    Top = 120
+    Width = 121
+    Height = 21
+    EditLabel.Width = 37
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Estado:'
+    TabOrder = 5
+  end
+end

@@ -17,20 +17,21 @@ procedure TfrmMain.editCEPExit(Sender: TObject);
 var
   _rEndereco: TBuscaComCEP;
 begin
-  editEND.Clear;
-  editBAIRRO.Clear;
-  editCIDADE.Clear;
-  editUF.Clear;
+  LabeledEdit2.Clear;
+  LabeledEdit3.Clear;
+  LabeledEdit4.Clear;
+  LabeledEdit5.Clear;
+  LabeledEdit6.Clear;
 
-  if eCEP.Text = EmptyStr then
+  if LabeledEdit1.Text = EmptyStr then
     Exit;
 
-  _rEndereco := TBuscaComCEP.Create(editCEP.Text);
+  _rEndereco := TBuscaComCEP.Create(LabeledEdit1.Text);
   try
-    editEND.Text := _rEndereco.Logradouro;
-    editBAIRRO.Text := _rEndereco.Bairro;
-    editCIDADE.Text := _rEndereco.Cidade;
-    editUF.Text := _rEndereco.UF;
+    LabeledEdit2.Text := _rEndereco.Logradouro;
+    LabeledEdit4.Text := _rEndereco.Bairro;
+    LabeledEdit5.Text := _rEndereco.Cidade;
+    LabeledEdit6.Text := _rEndereco.UF;
   finally
     _rEndereco.Free;
   end;
@@ -38,4 +39,4 @@ end;
 ```
 
 ## Next Project Steps
-Build a Delphi Edit CEP_Search Component
+Build a Delphi CEP_Search Edit Component
