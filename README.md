@@ -40,3 +40,6 @@ end;
 
 ## Next Project Steps
 Build a Delphi CEP_Search Edit Component
+
+## Dependencies
+OpenSSL (libeay32.dll and ssleay32.dll)
